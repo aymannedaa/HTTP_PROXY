@@ -1,0 +1,7 @@
+This is the index file you should see when you GET without a file
+
+You can PUT anything you want (even this file)
+
+You cannot create directories (except through some bugs)
+
+...

@@ -1,0 +1,23 @@
+ The Internet RFC 789 Case Study 3 – How the ARAPA Crash occurred
+
+An interesting and unusual problem occurred on October 27th, 1980 in the ARPA network. For several hours the network was unusable but still appeared to be online. This outage was caused by a high- priority process executing and consuming more system resources then it should.
+
+The ARPAnet had IMP’s (Interface Message processors) which where used to connect computers to each other suffered a number of faults. Restarting individual IMP’s did nothing to solve the problem because as soon as they connected to the network again, IMP’s continued with the same behaviour and the network was still down.
+
+It was eventually found that there was a bad routing updates. These updates are created at least 1 per minute by each IMP and contain information such as the IMP’s direct neighbours and the average packet per second across the line. The fact they could not keep their lines up was also a clue and it suggested that the IMP’s were unable to send the line up/down protocol because of heavy CPU utilisation. After an amount of time the lines would have been declared down because the lines up/down protocol was not able to be sent.
+
+A core dump (log files) showed that all IMP’s had routing updates waiting to be processed and it was later revealed that all updates came from the one IMP, IMP 50.
+
+It showed that IMP 50 had been malfunctioning before the network outage, unable to communicate properly with its neighbour IMP 29, which was also malfunctioning, IMP 29 was dropping bits.
+
+The updates which were waiting to be processed by IMP 50 had a pattern this was as follows: 8, 40, 44, 8, 40, 44….. This was because of the way the algorithm determine what the most recent update was. 44 was considered more recent then 40, 40 was considered more recent then 8 and 8 was considered more recent then 44. Thus this set of updates formed an infinite loop, and the IMP’s were spending all their CPU time and buffer space processing this loop. Accepting the updates because the algorithm meant that each update was more recent then the last, this was easily fixed by ignoring any updates from IMP 50; but what had to be found is how did IMP 50 manage to get three updates into the network at once?
+
+The answer was in IMP 29, which was dropping bits. When looking at the 6 bits that make up the sequence numbers of the updates we can see a problem
+
+8 – 001000
+
+40- 101000
+
+44- 101100
+
+If the first update was 44, then 40 could easily have been created by an accidental dropped bit and again 40 could be turned into 8 by dropping another bit. Therefore this would make three updates from the same IMP that would create the infinite loop.

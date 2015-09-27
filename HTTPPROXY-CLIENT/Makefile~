@@ -1,0 +1,6 @@
+HTTPClient : HTTPClient
+	gcc -g -Wall HTTPClient.c -o HTTPClient
+
+
+clean :
+	rm HTTPClient
